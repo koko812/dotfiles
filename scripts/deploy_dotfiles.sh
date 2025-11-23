@@ -26,5 +26,13 @@ link "$DOTFILES_DIR/zsh/.zshrc"      "$HOME/.zshrc"
 link "$DOTFILES_DIR/vim/.vimrc"      "$HOME/.vimrc"
 link "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
 
+cat <<'EOF' >> ~/.bashrc
+# if interactive bash, switch to zsh
+if [ -t 1 ] && command -v zsh >/dev/null 2>&1; then
+    exec zsh
+fi
+EOF
+
+
 echo "Done! Backup stored at: $BACKUP_DIR"
 
