@@ -5,14 +5,6 @@ inoremap <expr> /
       \   ? '<c-x><c-f>'
       \   : '/'
 
-call plug#begin('~/.vim/plugged')
-Plug 'tpope/vim-sensible'
-Plug 'davidhalter/jedi-vim', {'for': 'python'}   " pythonファイルを編集するときだけ起動
-Plug 'preservim/nerdtree'
-Plug 'Townk/vim-autoclose'
-Plug 'mattn/emmet-vim'
-Plug 'tpope/vim-surround'
-call plug#end()
 
 " 共通のインデント設定（すべてのファイルタイプに適用）
 set tabstop=2       " タブ文字の表示幅を2に
