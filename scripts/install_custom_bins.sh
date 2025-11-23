@@ -1,16 +1,25 @@
 #!/usr/bin/env bash
 set -e
 
-DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
-TARGET_BIN="$HOME/bin"
+DOTFILES_DIR="$HOME/dotfiles"
+BIN_SRC="$DOTFILES_DIR/bin"
+BIN_DEST="$HOME/.local/bin"
 
-mkdir -p "$TARGET_BIN"
+mkdir -p "$BIN_DEST"
 
-echo "[info] Linking custom commands from $DOTFILES_DIR/bin to $TARGET_BIN"
+for f in "$BIN_SRC"/*; do
+    [ -f "$f" ] || continue   # ファイル以外はスキップ
 
-for f in "$DOTFILES_DIR/bin/"*; do
-  cmd=$(basename "$f")
-  ln -sf "$f" "$TARGET_BIN/$cmd"
-  echo "[ok] $cmd → $TARGET_BIN/$cmd"
+    cmd=$(basename "$f")
+
+    echo "[install] $cmd"
+
+    # 実行権限を付与
+    chmod +x "$f"
+
+    # シンボリックリンクを貼る
+    ln -sf "$f" "$BIN_DEST/$cmd"
 done
+
+echo "Custom commands installed to $BIN_DEST"
 
