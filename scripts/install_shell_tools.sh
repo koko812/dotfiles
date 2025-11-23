@@ -14,6 +14,24 @@ else
   echo "[info] oh-my-zsh already installed. skip."
 fi
 
+# ----- zsh plugins (autosuggestions, syntax highlighting) -----
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+  echo "[info] Installing zsh-autosuggestions..."
+  git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+else
+  echo "[info] zsh-autosuggestions already installed. skip."
+fi
+
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+  echo "[info] Installing zsh-syntax-highlighting..."
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+else
+  echo "[info] zsh-syntax-highlighting already installed. skip."
+fi
+
+
 # ----- fzf -----
 if [ ! -d "$HOME/.fzf" ]; then
   echo "[info] Installing fzf..."
