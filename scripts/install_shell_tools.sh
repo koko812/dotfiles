@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -e
+
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+
+echo "[info] DOTFILES_DIR = $DOTFILES_DIR"
+
+# ----- oh-my-zsh -----
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "[info] Installing oh-my-zsh..."
+  ZSH="$HOME/.oh-my-zsh" RUNZSH=no CHSH=no \
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+else
+  echo "[info] oh-my-zsh already installed. skip."
+fi
+
+# ----- fzf -----
+if [ ! -d "$HOME/.fzf" ]; then
+  echo "[info] Installing fzf..."
+  git clone --depth 1 https://github.com/junegunn/fzf.git "$HOME/.fzf"
+  "$HOME/.fzf/install" --key-bindings --completion --no-update-rc
+else
+  echo "[info] fzf already installed. skip."
+fi
+
+# ----- zoxide -----
+if ! command -v zoxide >/dev/null 2>&1; then
+  echo "[info] Installing zoxide..."
+  curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+else
+  echo "[info] zoxide already installed. skip."
+fi
+
+# ----- ~/.zshrc を dotfiles 版に差し替え -----
+if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
+  echo "[warn] $HOME/.zshrc が既に存在するのでバックアップします..."
+  mv "$HOME/.zshrc" "$HOME/.zshrc.bak.$(date +%Y%m%d%H%M%S)"
+fi
+
+ln -sf "$DOTFILES_DIR/zsh/.zshrc" "$HOME/.zshrc"
+echo "[ok] ~/.zshrc -> $DOTFILES_DIR/zsh/.zshrc"
+
+echo "[done] 反映するには 'exec zsh' か 'zsh' を実行してください。"
+
