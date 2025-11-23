@@ -49,6 +49,33 @@ else
   echo "[info] zoxide already installed. skip."
 fi
 
+# ----- gh (GitHub CLI) -----
+if ! command -v gh >/dev/null 2>&1; then
+  echo "[info] Installing gh (user-local)..."
+  GH_VER="2.63.0"
+  curl -L \
+    https://github.com/cli/cli/releases/download/v${GH_VER}/gh_${GH_VER}_linux_amd64.tar.gz \
+    -o /tmp/gh.tar.gz
+
+  tar -xzf /tmp/gh.tar.gz -C /tmp
+  mkdir -p "$HOME/.local/bin"
+  mv /tmp/gh_${GH_VER}_linux_amd64/bin/gh "$HOME/.local/bin/"
+  echo "[info] gh installed to ~/.local/bin/gh"
+else
+  echo "[info] gh already installed. skip."
+fi
+
+# ----- uv -----
+if ! command -v uv >/dev/null 2>&1; then
+  echo "[info] Installing uv (user-local)..."
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  echo "[info] uv installed. Make sure ~/.local/bin or ~/.cargo/bin is on PATH."
+else
+  echo "[info] uv already installed. skip."
+fi
+
+
+
 # ----- ~/.zshrc を dotfiles 版に差し替え -----
 if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
   echo "[warn] $HOME/.zshrc が既に存在するのでバックアップします..."
