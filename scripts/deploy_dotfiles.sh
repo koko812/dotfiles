@@ -1,39 +1,30 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-DOTFILES_DIR="${HOME}/dotfiles"
-BACKUP_DIR="${HOME}/dotfiles_backup"
-
-timestamp=$(date +"%Y%m%d_%H%M%S")
-
-backup_file() {
-    local target="$1"
-    if [ -f "$target" ] || [ -d "$target" ]; then
-        mkdir -p "$BACKUP_DIR"
-        mv "$target" "${BACKUP_DIR}/$(basename "$target").${timestamp}"
-        echo "[backup] $(basename "$target") → $BACKUP_DIR"
-    fi
-}
-
-deploy_file() {
-    local src="$1"
-    local dest="$2"
-
-    backup_file "$dest"
-    ln -s "$src" "$dest"
-    echo "[link] $dest → $src"
-}
+set -e
 
 echo "=== Dotfiles Deployment ==="
 
-# zsh
-deploy_file "${DOTFILES_DIR}/zsh/.zshrc" "${HOME}/.zshrc"
+DOTFILES_DIR="$HOME/dotfiles"
+BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$BACKUP_DIR"
 
-# tmux
-deploy_file "${DOTFILES_DIR}/tmux/.tmux.conf" "${HOME}/.tmux.conf"
+link() {
+    local src=$1
+    local dest=$2
 
-# vim
-deploy_file "${DOTFILES_DIR}/vim/.vimrc" "${HOME}/.vimrc"
+    # 既存の dest が通常ファイル／ディレクトリ／シンボリックリンクのいずれでもバックアップ
+    if [ -e "$dest" ] || [ -L "$dest" ]; then
+        echo "[backup] $dest → $BACKUP_DIR/"
+        mv "$dest" "$BACKUP_DIR/"
+    fi
 
-echo "Done! (backup in $BACKUP_DIR)"
+    # シンボリックリンク作成
+    echo "[link] $dest → $src"
+    ln -s "$src" "$dest"
+}
+
+link "$DOTFILES_DIR/zsh/.zshrc"      "$HOME/.zshrc"
+link "$DOTFILES_DIR/vim/.vimrc"      "$HOME/.vimrc"
+link "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
+
+echo "Done! Backup stored at: $BACKUP_DIR"
 
